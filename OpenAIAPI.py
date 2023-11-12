@@ -11,7 +11,25 @@ class OpenAIAPI():
         """
         load_dotenv(find_dotenv())
         os.environ['OPENAI_API_KEY'] = os.environ.get('API_KEY')
-        
         self.client = OpenAI()
         
-        print(self.client.models.list())
+    def request(
+        self,
+        messages
+    ):
+        """Make a request to OpenAI API
+
+        Args:
+            messages (list): List of messages and memory of the language model of this conversation
+
+        Returns:
+            response (ChatGeneration): Full OpenAI API Response
+            response.choices[0].message.content (str): Generated answer
+        """
+        response = self.client.chat.completions.create(
+            model='gpt-3.5-turbo',
+            messages=messages,
+            temperature=0.0, # deterministic outputs
+            max_tokens=10    # 10 tokens as we only want yes or no
+        )
+        return response, response.choices[0].message.content
